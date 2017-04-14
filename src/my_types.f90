@@ -41,6 +41,7 @@ IMPLICIT NONE
 	INTEGER :: window_mode, diagnostics_with_dcut
 	REAL(8) :: moving_window_speed
 	real(8) :: velocity_background
+  INTEGER :: Laser,Bunches
 
     REAL(8)    :: start_n_peak_in_window,start_ramp_length_in_window,start_ramp_peak_position
 	  INTEGER :: I_start_ramp_length_out_window,I_start_ramp_length_in_window,I_start_ramp_length,I_start_ramp_peak_position
@@ -95,6 +96,7 @@ IMPLICIT NONE
       REAL(8) :: rho,n0,Jz,Jr,ux,uz,Ez,Ex,Bphi,Bphi_old,Jpe_r,Jpe_z
       REAL(8) :: Ez_bunch,Ex_bunch,Bphi_bunch,Bphi_old_bunch
       REAL(8) :: B_ex_poloidal
+      COMPLEX(8) :: a ! laser envelope
    END TYPE
 
     TYPE :: mesh_utility
@@ -144,6 +146,19 @@ IMPLICIT NONE
 		LOGICAL :: l_bunch_internal_init
 		INTEGER :: n_total_bunches=1,n_particles(7)=0,self_consistent_field_bunch
 		REAL(8)    :: bunch_s_x(7)=0.,bunch_s_y(7)=0.,bunch_s_z(7)=0.
+		REAL(8)    :: bunch_gamma_m(7)=0.,bunch_eps_x(7)=0.,bunch_eps_y(7)=0.,bunch_dgamma(7)=0.
+    real(8)    :: Charge_right(7),Charge_left(7)
+		REAL(8)    :: maxnorm,wsor
+		INTEGER    :: init_width_r, init_width_z, iter_max, shape(7)
+		REAL(8)    :: ChargeB(7)=0., db(7)=0.
+    CHARACTER  :: inbunch(6)*30
+	END TYPE
+
+  !Laser-initialisation-parameters
+	TYPE :: laser_inside_initialization
+		LOGICAL :: l_bunch_internal_init
+		INTEGER :: n_total_bunches=1,n_particles(7)=0,self_consistent_field_bunch
+		REAL(8)    :: a0=0.1,lambda0=0.8,w0=12.,FWHM_fs=28.
 		REAL(8)    :: bunch_gamma_m(7)=0.,bunch_eps_x(7)=0.,bunch_eps_y(7)=0.,bunch_dgamma(7)=0.
     real(8)    :: Charge_right(7),Charge_left(7)
 		REAL(8)    :: maxnorm,wsor

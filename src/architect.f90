@@ -43,7 +43,7 @@ USE init_fields
 USE dump_status
 USE ion_background
 USE ionisation_module
-
+USE initialize_laser
 
 
 IMPLICIT NONE

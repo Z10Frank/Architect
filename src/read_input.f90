@@ -91,6 +91,12 @@ subroutine read_input
     !--- ---!
 
     !--- ---!
+    write(*,*) 'preset :: read :: laser pulse'
+    call preset_laser_pulse_initialization
+    call read_nml_laser_pulse_initialization
+    !--- ---!
+
+    !--- ---!
 		write(*,*) 'preset :: read :: operating system'
 		call preset_OS_nml
 		call read_OS_nml
@@ -233,24 +239,29 @@ end subroutine read_plasma_parameters
 !--- SIM PARAMETERS
 !--- --- --- --- --- --- ---!
 subroutine preset_sim_parameters
-  sim_parameters%CFL 	= .9
+
+  ! If 0, the bunch_initialization block will be ignored, as every routine related to bunches
+  sim_parameters%Bunches      = 1
+  ! If 0, the laser_initialization block will be ignored, as every routine related to the laser
+  sim_parameters%Laser        = 0
+  sim_parameters%CFL          = .9
   sim_parameters%Output_format= 1 ! Binary PS and grid output
-  sim_parameters%jump_grid	= 1 ! no jump of grid points in output
+  sim_parameters%jump_grid    = 1 ! no jump of grid points in output
   sim_parameters%reduced_PS 	= 1
-  sim_parameters%jump_PS		= 1 ! no jump of particles in PSoutput
+  sim_parameters%jump_PS      = 1 ! no jump of particles in PSoutput
 
   !--- LineOut ---!
   sim_parameters%L_lineout = .FALSE.
 
   !--- Shapiro Wilks Test---!
-  sim_parameters%L_SW_test=.FALSE.
+  sim_parameters%L_SW_test          =.FALSE.
   sim_parameters%SW_sample_dimension=5000
-  sim_parameters%SW_sub_iter=10
+  sim_parameters%SW_sub_iter        =10
 
   !--- bunch field treatment ---!
-  sim_parameters%L_BunchREinit=.false.
-  sim_parameters%L_plasma_evolution=.true.
-  sim_parameters%L_Bunch_evolve=.false.
+  sim_parameters%L_BunchREinit      =.false.
+  sim_parameters%L_plasma_evolution =.true.
+  sim_parameters%L_Bunch_evolve     =.false.
 end subroutine preset_sim_parameters
 
 
@@ -436,6 +447,14 @@ subroutine preset_bunch_initialization
 end subroutine preset_bunch_initialization
 
 
+subroutine preset_laser_pulse_initialization
+  laser_initialization%a0=2.5
+	laser_initialization%lambda0=0.8   ! laser wavelength, um
+	laser_initialization%w0=12.			   ! waist size (2*rms width), um
+	laser_initialization%FWHM_fs=28. 	 ! pulse length, FWHM in intensity, fs
+end subroutine preset_laser_pulse_initialization
+
+
 subroutine read_nml_bunch_initialization
     NAMELIST / BUNCHINIT / bunch_initialization
     open(iounit,file='architect.nml',status='old')
@@ -444,6 +463,16 @@ subroutine read_nml_bunch_initialization
     close(iounit)
     if(ierr/=0) call print_at_screen_nml_error
 end subroutine read_nml_bunch_initialization
+
+
+subroutine read_nml_laser_pulse_initialization
+    NAMELIST / LASERINIT / laser_initialization
+    open(iounit,file='architect.nml',status='old')
+    READ(iounit,NML=LASERINIT,iostat=ierr)
+    error_message='laser parameters'
+    close(iounit)
+    if(ierr/=0) call print_at_screen_nml_error
+end subroutine read_nml_laser_pulse_initialization
 
 
 !--- --- --- --- --- --- ---!

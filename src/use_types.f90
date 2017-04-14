@@ -28,6 +28,7 @@ TYPE(simul_param) :: sim_parameters
 TYPE(mesh_param) :: mesh_par
 TYPE(plasma_param) :: plasma
 TYPE(bunch_inside_initialization) :: bunch_initialization
+TYPE(laser_inside_initialization) :: laser_initialization
 TYPE(OSys_param) :: OSys
 TYPE(twiss_param) :: twiss
 TYPE(Bpoloidal_param) :: Bpoloidal

@@ -19,6 +19,7 @@ FILES  =  my_types.f90 \
 					shapiro_wilks.f90 \
 					Particle_Classes.f90 \
 					read_input.f90 \
+					laser_initialization.f90 \
 					fileflags.f90 \
 					bunch_generation.f90 \
 					utility.f90 \
@@ -121,6 +122,7 @@ $(OBJ_FOLDER)/Particle_Classes.o: $(SRC_FOLDER)/Particle_Classes.f90
 $(OBJ_FOLDER)/Particle_Classes.mod: $(SRC_FOLDER)/Particle_Classes.f90 $(OBJ_FOLDER)/Particle_Classes.o
 	@true
 
+
 $(OBJ_FOLDER)/read_input.o: $(SRC_FOLDER)/read_input.f90 \
 												    $(OBJ_FOLDER)/my_types.mod \
 														$(OBJ_FOLDER)/use_types.mod \
@@ -129,6 +131,14 @@ $(OBJ_FOLDER)/read_input.o: $(SRC_FOLDER)/read_input.f90 \
 	$(FC) $(OPTFC) $(MODULE_REDIRECT) -c -o $@ $< $(REDIRECT)
 $(OBJ_FOLDER)/read_input.mod: $(SRC_FOLDER)/read_input.f90 $(OBJ_FOLDER)/read_input.o
 	@true
+
+$(OBJ_FOLDER)/laser_initialization.o: $(SRC_FOLDER)/laser_initialization.f90 \
+													    $(OBJ_FOLDER)/my_types.mod \
+															$(OBJ_FOLDER)/use_types.mod 
+		$(FC) $(OPTFC) $(MODULE_REDIRECT) -c -o $@ $< $(REDIRECT)
+$(OBJ_FOLDER)/laser_initialization.mod: $(SRC_FOLDER)/laser_initialization.f90 $(OBJ_FOLDER)/laser_initialization.o
+		@true
+
 
 $(OBJ_FOLDER)/fileflags.o: $(SRC_FOLDER)/fileflags.f90
 	$(FC) $(OPTFC) $(MODULE_REDIRECT) -c -o $@ $< $(REDIRECT)
@@ -344,6 +354,7 @@ $(OBJ_FOLDER)/architect.o: $(SRC_FOLDER)/architect.f90 \
 													 $(OBJ_FOLDER)/my_types.mod \
 													 $(OBJ_FOLDER)/use_types.mod \
 													 $(OBJ_FOLDER)/read_input_module.mod \
+													 $(OBJ_FOLDER)/laser_initialization.mod \
 													 $(OBJ_FOLDER)/make_a_mesh.mod \
 													 $(OBJ_FOLDER)/fields_fdtd.mod \
 													 $(OBJ_FOLDER)/move_window_fdtd.mod \
