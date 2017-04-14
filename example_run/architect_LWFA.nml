@@ -1,0 +1,227 @@
+&PLASMA_PARAMETERS
+	!Length of the accelerating stage, in um
+	plasma%l_acc=30050.0
+
+	!Plasma initial density, in cm^-3
+	plasma%n0=1.0e16
+/
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+&SIMULATION_PARAMETERS
+
+	! Presence (1) or absence (0) of a laser pulse (driver) and bunches (driver and/or witness)
+	sim_parameters%Laser   = 0
+	sim_parameters%Bunches = 1
+
+	!CFL condition
+	sim_parameters%CFL=0.9
+
+	! DOMAIN BOUNDARIES AND CAPILLARY RAMP LENGHT
+
+	!Moving window parameters
+	sim_parameters%window_mode = 1 !(0 = window moves with first bunch, 1 = window moves at constant speed)
+	sim_parameters%moving_window_speed = 1.  ! in units of c
+
+
+! FLUID ADVANCE SCHEME
+
+! Fluid Scheme (0 = Upwind, 1 = FCT, 2 = Upwind new centering )
+  sim_parameters%Fluid_Scheme=2
+
+! BUNCH INTEGRATED DIAGNOSTICS
+
+	! Limit value for integrated bunch diagnostics with dcut (in initial sigma units)
+	! Diagnostics is performed on particles within a radius of sigma_cut*(max(sigma_z0,sigma_r0)
+	sim_parameters%sigma_cut=2.5
+
+	!Enable diagnostics with dcut (0 = No, 1 = Yes)
+	sim_parameters%diagnostics_with_dcut = 1
+
+
+! OUTPUT OPTIONS
+	!Output format (0:ASCII, 1:Binary; Integrated parameters are always in ASCII)
+	sim_parameters%Output_format= 1
+
+	!Save reduced Phase Space (0: save the whole phase space, 1: save only the phase space with the cut of integrated diagnostics)
+	sim_parameters%reduced_PS = 0
+
+	!Integrated Outputs (sigmas, emittance, energy spread etc.) every nn steps :
+	sim_parameters%output_Integrated_params_nstep = 900000, !steps
+	sim_parameters%output_Integrated_params_dist  = 25., !mu
+
+	!OnGrid Output (set 0 for final results only):
+	sim_parameters%output_grid_nstep = 90000, !90000!steps
+	sim_parameters%output_grid_dist  = 10., !mu
+
+	!Phase Space output (set 0 for writing at the end):
+	sim_parameters%output_PS_nstep = 900000, !steps
+	sim_parameters%output_PS_dist  = 10.e4,!mu
+
+	!Number of grid point to jump when saving
+	sim_parameters%jump_grid=1,
+
+	!Number of particles to jump when saving
+	sim_parameters%jump_PS=1,
+
+!Shapiro-Wilks applied on bunches - diagnostic options:
+	sim_parameters%L_SW_test=.TRUE.,
+	sim_parameters%SW_sample_dimension=5000,
+	sim_parameters%SW_sub_iter=10,
+
+!lineout
+	sim_parameters%L_lineout = .TRUE.,
+
+!Bunch REinitialisation
+	sim_parameters%L_Bunch_evolve=.FALSE.
+	sim_parameters%L_BunchREinit=.FALSE.
+	sim_parameters%bunch_reinit_distance_um=50.0
+/
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+&MESH_PARAMETERS
+
+	!Transverse sampling points per units min(2* whole bunch \sigma_r, lambda_p/2, based on first bunch)
+	mesh_par%Nsample_r= 20
+	!Longitudinal sampling points per unit min(\sigma_z bunches,lambda_p, based on first bunch)
+	mesh_par%Nsample_z= 50
+
+
+	!Define resolution instead of number of points
+	mesh_par%dzm=1.0
+	mesh_par%dxm=0.4
+
+	!Moving window/Domain boundaries in lambdap units
+	mesh_par%Left_Domain_boundary= 1.0
+	mesh_par%Right_Domain_boundary=1.5
+	!Domain Boundaries in mu
+	mesh_par%Left_mesh=350.00
+	mesh_par%Right_mesh=250.00
+
+	!---Mesh radius in \sigma_r units---!
+	mesh_par%Rmax=13.
+	mesh_par%Rmax_plasma=8.
+	!---Mesh radius in microns---!
+	mesh_par%R_mesh=90.
+	mesh_par%R_mesh_plasma=80.
+/
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+&BACKGROUND_PLASMA_PROFILE
+bck_plasma%order_logitudinal(1)=1, !0: constant
+bck_plasma%order_logitudinal(2)=0, !0: constant
+bck_plasma%order_logitudinal(3)=0, !0: constant !1: linear ramp
+bck_plasma%order_logitudinal(4)=1, !0: constant !1: linear ramp
+
+bck_plasma%order_radial(1)=0,      !0: constant
+bck_plasma%order_radial(2)=0,      !0: constant
+bck_plasma%order_radial(3)=0,      !0: constant
+bck_plasma%order_radial(4)=0,      !0: constant
+
+bck_plasma%n_over_n0(1)=0.d0,      !n/n0
+bck_plasma%n_over_n0(2)=1.d0,      !n/n0
+bck_plasma%n_over_n0(3)=1.d0,      !n/n0
+bck_plasma%n_over_n0(4)=0.d0,      !n/n0
+
+bck_plasma%z_coordinate_um(1)=0.
+bck_plasma%z_coordinate_um(2)=100.0,
+bck_plasma%z_coordinate_um(3)=5.5e4,
+bck_plasma%z_coordinate_um(4)=6.0e4,
+
+bck_plasma%radius_um(1)=70., 
+bck_plasma%radius_um(2)=70., 
+bck_plasma%radius_um(3)=70., 
+bck_plasma%radius_um(4)=70., 
+/
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+&BUNCHINIT
+	bunch_initialization%l_bunch_internal_init=.T.,
+	bunch_initialization%n_total_bunches=2,
+	bunch_initialization%self_consistent_field_bunch=3,
+	bunch_initialization%maxnorm=1e-6,
+	bunch_initialization%init_width_r=100,
+	bunch_initialization%init_width_z=3,
+	bunch_initialization%iter_max=1000,
+
+	bunch_initialization%db(1)=0.,
+	bunch_initialization%db(2)=0.45,
+
+	bunch_initialization%ChargeB(1)=0.200,
+	bunch_initialization%ChargeB(2)=0.060,
+
+	bunch_initialization%shape(1)=1,
+	bunch_initialization%n_particles(1)=10000,
+	bunch_initialization%bunch_s_x(1)=4.0,
+	bunch_initialization%bunch_s_y(1)=4.0,
+	bunch_initialization%bunch_s_z(1)=50.0,
+	bunch_initialization%bunch_gamma_m(1)=200.,
+	bunch_initialization%bunch_eps_x(1)=3.00,
+	bunch_initialization%bunch_eps_y(1)=3.00,
+	bunch_initialization%bunch_dgamma(1)=0.100,
+	!bunch_initialization%Charge_left(1)=8.00,
+	!bunch_initialization%Charge_right(1)=1.0,
+
+	bunch_initialization%shape(2)=1,
+	bunch_initialization%n_particles(2)=5000,
+	bunch_initialization%bunch_s_x(2)=2.300,
+	bunch_initialization%bunch_s_y(2)=2.300,
+	bunch_initialization%bunch_s_z(2)=10.0,
+	bunch_initialization%bunch_gamma_m(2)=200.,
+	bunch_initialization%bunch_eps_x(2)=1.00,
+	bunch_initialization%bunch_eps_y(2)=1.00,
+	bunch_initialization%bunch_dgamma(2)=0.100,
+
+
+	!From external file:
+	bunch_initialization%inbunch(1)='driver1.dat',
+/
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+&LASERINIT
+  	laser_initialization%a0=2.5
+	laser_initialization%lambda0=0.8   ! laser wavelength, um
+	laser_initialization%w0=12.		   ! waist size (2*rms width), um
+	laser_initialization%FWHM_fs=28.   ! pulse length, FWHM in intensity, fs
+
+/
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+&twiss_par
+! TWISS PARAMETERS TRANSFORMATIONS FOR BEAMS
+! Transforms current beam twiss parameters alpha_start and beta_start, for each beam i, as
+! alpha_new(i)=alpha_new_factor(i)*alpha_start(i) and beta_new(i)=beta_new_factor(i)*beta_start(i), keeping emittance constant.
+! Take care that new values of beta are roughly the same for ALL bunches, for reliable simulations!
+    twiss%L_Twiss=.FALSE.,
+    twiss%alpha_new_factor(1)=0.09375,
+    twiss%beta_new_factor(1) =86.08333,
+    twiss%alpha_new_factor(2)=0.20794,
+    twiss%beta_new_factor(2) =5.5187334593,
+/
+
+&Bpoloidal_par
+	Bpoloidal%L_Bpoloidal=.FALSE.,
+	Bpoloidal%L_BfieldfromV=.FALSE.,
+	Bpoloidal%capillary_radius_um=500.0D0, !Capillary Radius in [um]
+	Bpoloidal%background_current_A(1)=45.D0, !Current in Ampere [A]
+	Bpoloidal%background_current_A(2)=  0.D0, !Current in Ampere [A]
+	Bpoloidal%a_shape(1)=-1.6D0, !Shape of the External Poloidal magnetic field
+	Bpoloidal%a_shape(2)= 0.0D0, !Shape of the External Poloidal magnetic field
+	Bpoloidal%z_coordinate_um(1)=-500.0,
+	Bpoloidal%z_coordinate_um(2)=-3.5D4,
+/
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+&IONISATION_PARAMETERS
+	ionisation%L_ionisation=.FALSE.,
+	ionisation%particle_per_cell=1,
+	ionisation%atomic_number=18.,
+  ionisation%mass_number=40.,
+/
+
+&OS
+	!Output format. 0=mac; 1=windows
+    Osys%macwin=0
+	Osys%output_dir='driver_320_witness_20'
+/
